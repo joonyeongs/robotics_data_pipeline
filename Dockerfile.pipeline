@@ -1,0 +1,37 @@
+FROM continuumio/miniconda3:24.11.1-0
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      build-essential \
+      ffmpeg \
+      libgl1 \
+      libglib2.0-0 \
+      libglfw3 \
+      libosmesa6 \
+      libxrender1 \
+      linux-libc-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+COPY environment.yml /workspace/environment.yml
+RUN conda env create -f /workspace/environment.yml && conda clean -afy
+
+COPY pipeline /workspace/pipeline
+COPY vendor /workspace/vendor
+COPY tests /workspace/tests
+
+ENV PATH=/opt/conda/envs/dexmimicgen/bin:$PATH
+ENV PROJECT_ROOT=/workspace
+ENV DEXMIMICGEN_DIR=/workspace/vendor/dexmimicgen
+ENV DATASET_DIR=/workspace/data/playback_data
+ENV OUTPUT_DIR=/workspace/pipeline_output
+ENV NUMBA_CACHE_DIR=/tmp/numba_cache
+ENV MUJOCO_GL=osmesa
+ENV PYTHONUNBUFFERED=1
+
+RUN pip install -e /workspace/vendor/robosuite && \
+    pip install -e /workspace/vendor/dexmimicgen
+
+CMD ["python", "-m", "pipeline.producer"]

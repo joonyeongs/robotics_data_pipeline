@@ -1,0 +1,20 @@
+name: dexmimicgen
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - h5py==3.12.1
+      - imageio==2.36.1
+      - imageio-ffmpeg==0.5.1
+      - kafka-python==2.0.2
+      - numba==0.56.4
+      - numpy==1.23.3
+      - pytest==8.3.4
+      - robosuite==1.5.2
+      - setuptools==69.5.1
+      - termcolor==2.5.0
+      - tqdm
+
