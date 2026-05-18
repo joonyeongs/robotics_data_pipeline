@@ -14,6 +14,7 @@ from pipeline.hdf5_sampling import (
 )
 from pipeline.playback import build_video_path
 from pipeline.stats import append_jsonl, update_stats, write_metadata
+from monitor.app import find_metadata, load_samples, load_stats, safe_child_path
 
 
 def create_dataset(path, demos, env_args=None):
@@ -65,3 +66,48 @@ def test_stats_jsonl_and_metadata_outputs(tmp_path):
     assert stats["failure"] == 0
     assert json.loads((output_dir / "logs" / "success.jsonl").read_text().strip()) == record
     assert json.loads((output_dir / "metadata" / "success" / "sample-1.json").read_text()) == record
+
+
+def test_monitor_summarizes_outputs(tmp_path):
+    output_dir = tmp_path / "out"
+    sample = {
+        "sample_id": "sample-2",
+        "classification": "failure",
+        "produced_at": "2026-05-18T00:00:00+00:00",
+        "classified_at": "2026-05-18T00:00:02+00:00",
+        "dataset_file": "two_arm_box_cleanup.hdf5",
+        "demo_key": "demo_3",
+        "duration_seconds": 2.25,
+        "playback_ok": True,
+        "success": False,
+        "task_name": "TwoArmBoxCleanup",
+        "use_actions": True,
+        "video_path": "/workspace/pipeline_output/videos/TwoArmBoxCleanup_fail_sample-2.mp4",
+    }
+    record = {
+        "classification": "failure",
+        "consumed_at": "2026-05-18T00:00:03+00:00",
+        "message": sample,
+        "topic": "robotics.samples.failure",
+    }
+
+    append_jsonl(output_dir / "logs" / "failure.jsonl", record)
+    write_metadata(output_dir / "metadata" / "failure" / "sample-2.json", record)
+    update_stats(output_dir / "stats.json", "failure", "sample-2", record["consumed_at"])
+
+    samples = load_samples(output_dir)
+    stats = load_stats(output_dir)
+
+    assert samples[0]["sample_id"] == "sample-2"
+    assert samples[0]["video_filename"] == "TwoArmBoxCleanup_fail_sample-2.mp4"
+    assert samples[0]["video_url"] == "/videos/TwoArmBoxCleanup_fail_sample-2.mp4"
+    assert stats["failure"] == 1
+    assert stats["by_task"]["TwoArmBoxCleanup"]["failure"] == 1
+    assert find_metadata(output_dir, "sample-2") == record
+
+
+def test_monitor_safe_child_path_blocks_traversal(tmp_path):
+    root = tmp_path / "videos"
+    root.mkdir()
+    assert safe_child_path(root, "demo.mp4") == (root / "demo.mp4").resolve()
+    assert safe_child_path(root, "../demo.mp4") is None

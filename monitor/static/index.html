@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Robotics Pipeline Monitor</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>Robotics Pipeline Monitor</h1>
+        <p id="statusLine">Waiting for pipeline output</p>
+      </div>
+      <div class="toolbar">
+        <label class="control">
+          <span>Topic</span>
+          <select id="topicFilter">
+            <option value="all">All</option>
+            <option value="success">Success</option>
+            <option value="failure">Failure</option>
+          </select>
+        </label>
+        <label class="control search">
+          <span>Search</span>
+          <input id="searchInput" type="search" placeholder="task, sample, dataset" />
+        </label>
+        <label class="toggle">
+          <input id="autoRefresh" type="checkbox" checked />
+          <span>Auto</span>
+        </label>
+        <button id="refreshButton" type="button">Refresh</button>
+      </div>
+    </header>
+
+    <main class="shell">
+      <section class="stats-grid" aria-label="Pipeline statistics">
+        <div class="metric">
+          <span class="metric-label">Total</span>
+          <strong id="totalMetric">0</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Success</span>
+          <strong id="successMetric">0</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Failure</span>
+          <strong id="failureMetric">0</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Success Rate</span>
+          <strong id="rateMetric">0%</strong>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <section class="samples-pane" aria-label="Samples">
+          <div class="pane-head">
+            <h2>Samples</h2>
+            <span id="sampleCount">0 rows</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Task</th>
+                  <th>Demo</th>
+                  <th>Actions</th>
+                  <th>Consumed</th>
+                </tr>
+              </thead>
+              <tbody id="samplesBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="detail-pane" aria-label="Selected sample">
+          <div class="video-panel">
+            <div class="pane-head">
+              <h2 id="selectedTitle">Replay</h2>
+              <span id="selectedStatus" class="badge neutral">No sample</span>
+            </div>
+            <video id="videoPlayer" controls muted playsinline></video>
+            <div id="videoEmpty" class="empty-state">No replay video selected</div>
+          </div>
+
+          <div class="details-grid">
+            <section class="detail-box">
+              <h3>Sample</h3>
+              <dl id="sampleDetails"></dl>
+            </section>
+            <section class="detail-box">
+              <h3>Per Task</h3>
+              <div id="taskStats" class="task-stats"></div>
+            </section>
+          </div>
+
+          <section class="metadata-box">
+            <div class="pane-head">
+              <h2>Metadata</h2>
+              <span id="metadataState">No sample</span>
+            </div>
+            <pre id="metadataView">{}</pre>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

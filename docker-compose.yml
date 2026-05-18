@@ -95,3 +95,19 @@ services:
       KAFKA_CONNECT_TIMEOUT_SECONDS: "${KAFKA_CONNECT_TIMEOUT_SECONDS:-60}"
     volumes:
       - ./pipeline_output:/workspace/pipeline_output
+
+  monitor:
+    profiles: ["apps"]
+    image: boaz-data-pipeline:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.pipeline
+    command: ["python", "-m", "monitor.app"]
+    environment:
+      OUTPUT_DIR: /workspace/pipeline_output
+      MONITOR_HOST: 0.0.0.0
+      MONITOR_PORT: "8000"
+    ports:
+      - "${MONITOR_PORT:-8000}:8000"
+    volumes:
+      - ./pipeline_output:/workspace/pipeline_output

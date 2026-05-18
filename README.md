@@ -9,9 +9,10 @@ consumers write JSONL logs, per-sample metadata, and aggregate statistics.
 ## Layout
 
 - `pipeline/`: producer, consumer, HDF5 sampling, playback, and stats code.
+- `monitor/`: browser UI for sample logs, aggregate stats, metadata, and replay videos.
 - `vendor/dexmimicgen/`: vendored DexMimicGen code used by the replay command.
 - `vendor/robosuite/`: vendored robosuite source and simulator assets used by DexMimicGen.
-- `docker-compose.yml`: Kafka, topic initializer, producer, success consumer, failure consumer.
+- `docker-compose.yml`: Kafka, topic initializer, producer, consumers, and optional monitor.
 - `pipeline_output/`: generated videos, logs, metadata, and `stats.json`.
 
 ## GitHub Portability
@@ -118,7 +119,32 @@ PRODUCER_INTERVAL_SECONDS=1 MAX_SAMPLES=3 docker compose run --rm producer
 
 `MAX_SAMPLES=0` means continuous production until stopped.
 
-### 6. Inspect The Pipeline Outputs
+### 6. Start The Monitor UI
+
+Open a fifth terminal:
+
+```bash
+cd /path/to/boaz_data_pipeline
+docker compose --profile apps run --rm --service-ports monitor
+```
+
+Then open:
+
+```text
+http://localhost:8000
+```
+
+The monitor reads `pipeline_output` from the host-mounted volume. It shows the
+latest samples, success/failure statistics, per-task counts, saved metadata, and
+the replay video for the selected sample.
+
+If port 8000 is already in use, set `MONITOR_PORT` in `.env` or inline:
+
+```bash
+MONITOR_PORT=8080 docker compose --profile apps run --rm --service-ports monitor
+```
+
+### 7. Inspect The Pipeline Outputs
 
 As samples are consumed, inspect these files from the host machine:
 
@@ -139,7 +165,7 @@ docker compose down
 ### Optional: Run All App Services Together
 
 For demos where step-by-step observation is not needed, the producer and
-consumers are available behind the `apps` Compose profile:
+consumers and monitor are available behind the `apps` Compose profile:
 
 ```bash
 docker compose --profile apps up --build
