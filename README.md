@@ -183,30 +183,3 @@ docker compose --profile apps up --build
 
 Replay failures are routed to the failure topic with command output included in
 the message, so environment/rendering problems are visible in the same pipeline.
-
-## Local Tests
-
-```bash
-python -m pytest tests
-```
-
-These tests cover the local pipeline logic without starting Kafka or MuJoCo.
-
-## Publishing To GitHub
-
-From this directory:
-
-```bash
-git init
-git add .
-git status
-git commit -m "Add robotics Kafka data pipeline tutorial"
-git branch -M main
-git remote add origin git@github.com:<your-user-or-org>/<repo-name>.git
-git push -u origin main
-```
-
-Before pushing, check the staged files carefully. The repo is large because it
-contains vendored simulator source. If you do not want that in git, replace
-`robots/dexmimicgen` and `robots/robosuite` with documented install steps or
-Git submodules before the first commit.
