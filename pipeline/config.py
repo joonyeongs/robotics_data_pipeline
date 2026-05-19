@@ -51,7 +51,7 @@ class PipelineConfig:
             ).resolve(),
             output_dir=Path(os.getenv("OUTPUT_DIR", str(root / "pipeline_output"))).resolve(),
             dexmimicgen_dir=Path(
-                os.getenv("DEXMIMICGEN_DIR", str(root / "vendor" / "dexmimicgen"))
+                os.getenv("DEXMIMICGEN_DIR", str(root / "robots" / "dexmimicgen"))
             ).resolve(),
             interval_seconds=_float_env("PRODUCER_INTERVAL_SECONDS", 5.0),
             max_samples=_int_env("MAX_SAMPLES", 10),

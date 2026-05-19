@@ -3,6 +3,5 @@ __pycache__/
 .pytest_cache/
 .git/
 pipeline_output/
-vendor/dexmimicgen/dataset/
+robots/dexmimicgen/dataset/
 data/
-

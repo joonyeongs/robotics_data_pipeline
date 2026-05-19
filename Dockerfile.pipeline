@@ -20,19 +20,19 @@ RUN conda env create -f /workspace/environment.yml && conda clean -afy
 
 COPY pipeline /workspace/pipeline
 COPY monitor /workspace/monitor
-COPY vendor /workspace/vendor
+COPY robots /workspace/robots
 COPY tests /workspace/tests
 
 ENV PATH=/opt/conda/envs/dexmimicgen/bin:$PATH
 ENV PROJECT_ROOT=/workspace
-ENV DEXMIMICGEN_DIR=/workspace/vendor/dexmimicgen
+ENV DEXMIMICGEN_DIR=/workspace/robots/dexmimicgen
 ENV DATASET_DIR=/workspace/data/playback_data
 ENV OUTPUT_DIR=/workspace/pipeline_output
 ENV NUMBA_CACHE_DIR=/tmp/numba_cache
 ENV MUJOCO_GL=osmesa
 ENV PYTHONUNBUFFERED=1
 
-RUN pip install -e /workspace/vendor/robosuite && \
-    pip install -e /workspace/vendor/dexmimicgen
+RUN pip install -e /workspace/robots/robosuite && \
+    pip install -e /workspace/robots/dexmimicgen
 
 CMD ["python", "-m", "pipeline.producer"]

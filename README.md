@@ -10,8 +10,8 @@ consumers write JSONL logs, per-sample metadata, and aggregate statistics.
 
 - `pipeline/`: producer, consumer, HDF5 sampling, playback, and stats code.
 - `monitor/`: browser UI for sample logs, aggregate stats, metadata, and replay videos.
-- `vendor/dexmimicgen/`: vendored DexMimicGen code used by the replay command.
-- `vendor/robosuite/`: vendored robosuite source and simulator assets used by DexMimicGen.
+- `robots/dexmimicgen/`: vendored DexMimicGen code used by the replay command.
+- `robots/robosuite/`: vendored robosuite source and simulator assets used by DexMimicGen.
 - `docker-compose.yml`: Kafka, topic initializer, producer, consumers, and optional monitor.
 - `pipeline_output/`: generated videos, logs, metadata, and `stats.json`.
 
@@ -208,5 +208,5 @@ git push -u origin main
 
 Before pushing, check the staged files carefully. The repo is large because it
 contains vendored simulator source. If you do not want that in git, replace
-`vendor/dexmimicgen` and `vendor/robosuite` with documented install steps or
+`robots/dexmimicgen` and `robots/robosuite` with documented install steps or
 Git submodules before the first commit.
